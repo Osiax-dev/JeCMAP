@@ -1,0 +1,18 @@
+# Sécurité JeCMAP — filet de protection si le serveur Apache sert la racine du projet
+# au lieu du dossier public/ (cas fréquent sous XAMPP ou en hébergement mutualisé).
+# La bonne configuration reste de faire pointer la racine web sur public/.
+
+<IfModule mod_authz_core.c>
+    # Fichiers cachés (.env, .git, .htaccess…) et fichiers de configuration sensibles
+    <FilesMatch "^\.|^(artisan|composer\.(json|lock)|package(-lock)?\.json|phpunit\.xml|vite\.config\.js|.*\.(sqlite|log|md))$">
+        Require all denied
+    </FilesMatch>
+</IfModule>
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    # Dossiers internes de Laravel : jamais accessibles depuis le navigateur
+    RewriteRule ^(\.git|app|bootstrap|config|database|resources|routes|storage|tests|vendor|node_modules)(/|$) - [F,L]
+</IfModule>
+
+Options -Indexes
